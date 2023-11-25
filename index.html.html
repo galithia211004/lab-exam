@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Guessing Game</title>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>Number Guessing Game</h1>
+  <p id="message">Guess a number between 1 and 10:</p>
+  <input type="text" id="guessInput">
+  <button onclick="checkGuess()">Submit Guess</button>
+  <button onclick="retryGame()" id="retryButton" disabled>Retry</button>
+
+  <script>
+    let secretNumber;
+    let chances = 3;
+
+    function generateSecretNumber() {
+      secretNumber = Math.floor(Math.random() * 10) + 1;
+    }
+
+    function checkGuess() {
+      const guessInput = document.getElementById('guessInput').value;
+      const messageElement = document.getElementById('message');
+      const retryButton = document.getElementById('retryButton');
+
+      if (validateInput(guessInput)) {
+        const userGuess = parseInt(guessInput);
+
+        if (userGuess === secretNumber) {
+          messageElement.innerHTML = 'Congratulations! You guessed the correct number.';
+          retryButton.disabled = false;
+        } else {
+          chances--;
+          displayFeedback(userGuess);
+        }
+
+        if (chances === 0) {
+          messageElement.innerHTML = `Sorry, you're out of chances. The correct number was ${secretNumber}.`;
+          retryButton.disabled = false;
+        }
+      } else {
+        messageElement.innerHTML = 'Please enter a valid number between 1 and 10.';
+      }
+    }
+
+    function validateInput(input) {
+      const number = parseInt(input);
+      return !isNaN(number) && number >= 1 && number <= 10;
+    }
+
+    function displayFeedback(userGuess) {
+      const messageElement = document.getElementById('message');
+      const retryButton = document.getElementById('retryButton');
+
+      if (userGuess < secretNumber) {
+        messageElement.innerHTML = 'Too low! Try again.';
+      } else {
+        messageElement.innerHTML = 'Too high! Try again.';
+      }
+
+      if (chances > 0) {
+        messageElement.innerHTML += ` You have ${chances} ${chances === 1 ? 'chance' : 'chances'} left.`;
+      }
+
+      retryButton.disabled = chances === 0;
+    }
+
+    function retryGame() {
+      chances = 3;
+      generateSecretNumber();
+      document.getElementById('guessInput').value = '';
+      document.getElementById('message').innerHTML = 'Guess a number between 1 and 10:';
+      document.getElementById('retryButton').disabled = true;
+    }
+
+    // Initialize the game
+    generateSecretNumber();
+  </script>
+</body>
+</html>
